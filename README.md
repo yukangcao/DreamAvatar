@@ -12,10 +12,10 @@
 [![Paper](http://img.shields.io/badge/Paper-arxiv.2306.03038-B31B1B.svg)](https://arxiv.org/abs/2304.00916)
 <a href="https://yukangcao.github.io/DreamAvatar/"><img alt="page" src="https://img.shields.io/badge/Webpage-0054a6?logo=Google%20chrome&logoColor=white"></a>
 
-<img src="./static/gif/clown.gif" width="200px">
-<img src="./static/gif/deadpool.gif" width="200px">
-<img src="./static/gif/joker.gif" width="200px">
-<img src="./static/gif/link.gif" width="200px">
+<img src="./docs//static/gif/clown.gif" width="200px">
+<img src="./docs//static/gif/deadpool.gif" width="200px">
+<img src="./docs/static/gif/joker.gif" width="200px">
+<img src="./docs/static/gif/link.gif" width="200px">
   
 Please refer to our webpage for more visualizations.
 </div>
@@ -24,7 +24,7 @@ Please refer to our webpage for more visualizations.
 We present **DreamAvatar**, a text-and-shape guided framework for generating high-quality 3D human avatars with controllable poses. While encouraging results have been reported by recent methods on text-guided 3D common object generation, generating high-quality human avatars remains an open challenge due to the complexity of the human body's shape, pose, and appearance. We propose DreamAvatar to tackle this challenge, which utilizes a trainable NeRF for predicting density and color for 3D points and pretrained text-to-image diffusion models for providing 2D self-supervision. Specifically, we leverage the SMPL model to provide shape and pose guidance for the generation. We introduce a dual-observation-space design that involves the joint optimization of a canonical space and a posed space that are related by a learnable deformation field. This facilitates the generation of more complete textures and geometry faithful to the target pose. We also jointly optimize the losses computed from the full body and from the zoomed-in 3D head to alleviate the common multi-face ''Janus'' problem and improve facial details in the generated avatars. Extensive evaluations demonstrate that DreamAvatar significantly outperforms existing methods, establishing a new state-of-the-art for text-and-shape guided 3D human avatar generation.
 
 <div align="center">
-<img src="./static/video/Pipeline-n.png" width="800px">
+<img src="./docs/static/video/Pipeline-n.png" width="800px">
 </div>
 
 ## Code
