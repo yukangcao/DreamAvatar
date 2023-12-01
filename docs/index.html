@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="A pipeline for controllable 3D human avatar generation under specific poses and shapes via the diffusion models.">
+  <meta name="keywords" content="3D generative model, head avatar, diffusion models, neural rendering">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DreamAvatar</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+  
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="./static/css/result.css">
+
+
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+</head>
+<body>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-2 publication-title">DreamAvatar: Text-and-Shape Guided 3D Human Avatar Generation via Diffusion Models</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://yukangcao.github.io/">Yukang Cao</a><sup>1*</sup>,</span>
+            <span class="author-block">
+              <a href="https://yanpei.me/">Yan-Pei Cao</a><sup>2*</sup>,</span>
+            <span class="author-block">
+              <a href="https://www.kaihan.org/">Kai Han</a><sup>1†</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=4oXBp9UAAAAJ&hl=zh-CN">Ying Shan</a><sup>2</sup>,</span>
+            <span class="author-block">
+              <a href="https://i.cs.hku.hk/~kykwong/">Kwan-Yee K. Wong</a><sup>2</sup>
+            </span>
+          </div>
+
+          <div class="is-size-6 publication-authors">
+            <span class="footnote"><sup>*</sup>Equal contributions  <sup>†</sup>Corresponding authors</span>
+          </div>
+          <div class="is-size-6 publication-authors">
+            <p>
+            <span class="author-block"><sup>1</sup>The University of Hong Kong <sup>2</sup>ARC Lab Tencent PCG</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2304.00916"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="DreamAvatar-supp.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Supplementary Material</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code (coming soon)</span>
+                  </a>
+              </span>
+              <span class="link-block">
+                <a href="https://yukangcao.github.io/DreamAvatar-old/"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>old version</span>
+                </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="my-hr">
+  <hr>
+</div>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            We present <strong>DreamAvatar</strong>, a text-and-shape guided framework for generating high-quality 3D human avatars with controllable poses. While encouraging results have been reported by recent methods on text-guided 3D common object generation, generating high-quality human avatars remains an open challenge due to the complexity of the human body's shape, pose, and appearance. We propose DreamAvatar to tackle this challenge, which utilizes a trainable NeRF for predicting density and color for 3D points and pretrained text-to-image diffusion models for providing 2D self-supervision. Specifically, we leverage the SMPL model to provide shape and pose guidance for the generation. We introduce a dual-observation-space design that involves the joint optimization of a canonical space and a posed space that are related by a learnable deformation field. This facilitates the generation of more complete textures and geometry faithful to the target pose. We also jointly optimize the losses computed from the full body and from the zoomed-in 3D head to alleviate the common multi-face ``Janus'' problem and improve facial details in the generated avatars. Extensive evaluations demonstrate that DreamAvatar significantly outperforms existing methods, establishing a new state-of-the-art for text-and-shape guided 3D human avatar generation.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <hr>
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">3D Human Avatar Generation - Canonical Pose</h2>
+        <div class="content has-text-justified">
+          <p>
+            DreamAvatar can generate a diverse set of 3D human avatars, e.g., real-world human beings, movie, anime, and video game characters, etc. 
+          </p>
+        </div>
+        <table>
+          <tr>
+            <td style="position:relative;"><video src="./static/video/canonical/Wonder_woman.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/canonical/Crystal_maiden.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/canonical/Woody.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/canonical/groot.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+          </tr>
+          <tr>
+            <td align="center" style="position:relative;"> Wonder Woman</td>
+            <td align="center" style="position:relative;"> Crystal Maiden as in Dota2</td>
+            <td align="center" style="position:relative;"> Woody in the Toy Story</td>
+            <td align="center" style="position:relative;"> I am Groot</td>
+          </tr>
+
+          <tr>
+            <td style="position:relative;"><video src="./static/video/canonical/Electro.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/canonical/Spiderman.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/canonical/Alien.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/canonical/Joker.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+          </tr>
+          <tr>
+            <td align="center" style="position:relative;"> Electro from Marvel</td>
+            <td align="center" style="position:relative;"> Spiderman</td>
+            <td align="center" style="position:relative;"> Alien</td>
+            <td align="center" style="position:relative;"> Joker</td>
+          </tr>
+
+          <tr>
+            <td style="position:relative;"><video src="./static/video/canonical/Flash.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/canonical/C-3PO.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/canonical/Luffy.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/canonical/kakashi.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+          </tr>
+          <tr>
+            <td align="center" style="position:relative;"> Flash from DC</td>
+            <td align="center" style="position:relative;"> C-3PO from Star Wars</td>
+            <td align="center" style="position:relative;"> Luffy from One Piece</td>
+            <td align="center" style="position:relative;"> Hatake Kakashi</td>
+          </tr>
+
+          <tr>
+            <td style="position:relative;"><video src="./static/video/canonical/Link.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/canonical/hipster_man.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/canonical/clown.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/canonical/sasuke.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+          </tr>
+          <tr>
+            <td align="center" style="position:relative;"> Link from Zelda</td>
+            <td align="center" style="position:relative;"> Hipster man</td>
+            <td align="center" style="position:relative;"> Clown</td>
+            <td align="center" style="position:relative;"> Uchiha Sasuke</td>
+          </tr>
+
+          <tr>
+            <td style="position:relative;"><video src="./static/video/canonical/woman_hippie.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/canonical/Buddhist_monk.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/canonical/track_field_athlete.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/canonical/body_builder.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+          </tr>
+          <tr>
+            <td align="center" style="position:relative;"> A woman in a hippie outfit</td>
+            <td align="center" style="position:relative;"> Buddhist Monk</td>
+            <td align="center" style="position:relative;"> Luffy from One Piece</td>
+            <td align="center" style="position:relative;"> Body builder wearing a tanktop</td>
+          </tr>
+
+        </table>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">3D Human Avatar Generation - Controllable Poses</h2>
+        <div class="content has-text-justified">
+          <p>
+            In addition to static 3D human avatar generations under canonical space, our method can create 3D human avatars under various poses and maintain high-quality texture and geometry from extreme poses, e.g., complex poses with severe self-occlusion.
+          </p>
+        </div>
+
+        <table>
+          <tr>
+            <td style="position:relative;"><video src="./static/video/poses/groot-00084.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/poses/groot-00230.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/poses/groot-00308.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/poses/groot-00350.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+          </tr>
+          <tr>
+            <td colspan="4" align="center" style="position:relative;"> I am Groot</td>
+          </tr>
+
+        </table>
+
+        <table>
+          <tr>
+            <td style="position:relative;"><video src="./static/video/poses/joker-00510.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/poses/joker-00530.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/poses/joker-00536.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/poses/joker-00296.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+          </tr>
+          <tr>
+            <td colspan="4" align="center" style="position:relative;"> Joker</td>
+          </tr>
+
+        </table>
+
+        <table>
+          <tr>
+            <td style="position:relative;"><video src="./static/video/poses/Flash-00576.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/poses/Flash-00596.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/poses/spiderman-00028.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/poses/spiderman-0279.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+          </tr>
+          <tr>
+            <td colspan="2" align="center" style="position:relative;"> Flash from DC</td>
+            <td colspan="2" align="center" style="position:relative;"> Spiderman</td>
+          </tr>
+
+        </table>
+
+      </div>
+    </div>
+
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">3D Human Avatar Generation - Controllable Shapes</h2>
+        <div class="content has-text-justified">
+          <p>
+            Our method can also generate different sizes of 3D human avatars, e.g., thin, short, tall, fat by modifying the SMPL shape parameters.
+          </p>
+        </div>
+
+        <table>
+          <tr>
+            <td style="position:relative;"><video src="./static/video/shapes/groot-0-3.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/shapes/groot-0-1.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/shapes/groot-1-2.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/shapes/groot-1+2.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+          </tr>
+          <tr>
+            <td colspan="4" align="center" style="position:relative;"> I am Groot</td>
+          </tr>
+
+        </table>
+
+      </div>
+    </div>
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">3D Human Avatar Generation - Text Manipulation</h2>
+        <div class="content has-text-justified">
+          <p>
+            By editing the textual prompt, DreamAvatar has the capability of generating faithful avatars that accurately embody the provided text, incorporating additional descriptive information and capturing the unique characteristics of the main subject.
+          </p>
+        </div>
+
+        <table>
+          <tr>
+            <td style="position:relative;"><video src="./static/video/text_manipulation/joker-green.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/text_manipulation/joker-texudo.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/text_manipulation/joker-pink.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/text_manipulation/joker-black.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+          </tr>
+          <tr>
+            <td colspan="1" align="center" style="position:relative;"> Joker wearing a green suit</td>
+            <td colspan="1" align="center" style="position:relative;"> Joker wearing a texudo</td>
+            <td colspan="1" align="center" style="position:relative;"> Joker wearing a pink suit</td>
+            <td colspan="1" align="center" style="position:relative;"> Joker wearing a black suit</td>
+          </tr>
+
+        </table>
+
+      </div>
+    </div>
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">3D Human Avatar Generation - Attributes Integration (head & body)</h2>
+        <div class="content has-text-justified">
+          <p>
+            Benefiting from the joint modeling of the zoomed-in 3D head and full body, our method seamlessly integrates the unique attributes derived from both head and body characters. See visualizations in Fig. 8. In contrast to the conventional approach of separately modeling head and body parts, DreamAvatar harmoniously combines these elements, resulting in a cohesive model that faithfully captures the essence of both subjects.
+          </p>
+        </div>
+
+        <table>
+
+          <tr>
+            <td colspan="1" align="center" style="position:relative;"> Clown </td>
+            <td colspan="1" align="center" style="position:relative;"> Deadpool</td>
+            <td colspan="1" align="center" style="position:relative;"> Joker</td>
+            <td colspan="1" align="center" style="position:relative;"> Clown</td>
+          </tr>
+          <tr>
+            <td style="position:relative;"><video src="./static/video/integration/clown.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/integration/deadpool.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/integration/joker.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+            <td style="position:relative;"><video src="./static/video/integration/link.mp4" width="235" playsinline autoplay loop preload muted></video></td>
+          </tr>
+          <tr>
+            <td colspan="1" align="center" style="position:relative;"> dreassing the clothes of Woody</td>
+            <td colspan="1" align="center" style="position:relative;"> dressing Joker-style's coat</td>
+            <td colspan="1" align="center" style="position:relative;"> dressed like Star-Lord</td>
+            <td colspan="1" align="center" style="position:relative;"> wearing the clothes of Link</td>
+          </tr>
+
+        </table>
+
+      </div>
+    </div>
+    <hr>
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Method</h2>
+        <div class="content has-text-justified">
+          <p>
+
+          </p>
+        </div> 
+        <img src="./static/video/Pipeline-n.png" witdh="1000">
+          <p>
+            Our network takes as input a text prompt and SMPL parameters to optimize a trainable NeRF via a pretrained denoising stable diffusion model. At the core of our network are two observation spaces, namely the canonical space and the posed space, that are related by an SMPL-based learnable deformation field. This dual-observation-space design facilities the generation of more complete textures and geometry faithful to the target pose.
+          </p>
+      </div>
+    </div>
+
+  </div>   
+</section>  
+
+<div class="my-hr">
+  <hr>
+</div>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>
+        @article{cao2023dreamavatar,
+          title={Dreamavatar: Text-and-shape guided 3d human avatar generation via diffusion models},
+          author={Cao, Yukang and Cao, Yan-Pei and Han, Kai and Shan, Ying and Wong, Kwan-Yee K},
+          journal={arXiv preprint arXiv:2304.00916},
+          year={2023}
+        }
+    </code></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is constructed using the source code provided by <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>, and we are grateful for the template they provided.
+            Allow us to express our appreciation for their contribution.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+
+</body>
+</html>
