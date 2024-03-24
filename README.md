@@ -6,7 +6,7 @@
 <a href="https://yanpei.me/">Yan-Pei Cao</a><sup>\*</sup>,
 <a href="https://www.kaihan.org/">Kai Han</a><sup>†</sup>,
 <a href="https://scholar.google.com/citations?user=4oXBp9UAAAAJ&hl=zh-CN">Ying Shan</a>,
-<a href="https://i.cs.hku.hk/~kykwong/">Kwan-Yee K. Wong</a>
+<a href="https://i.cs.hku.hk/~kykwong/">Kwan-Yee K. Wong†</a>
 
 
 [![Paper](http://img.shields.io/badge/Paper-arxiv.2306.03038-B31B1B.svg)](https://arxiv.org/abs/2304.00916)
