@@ -33,7 +33,7 @@ See [installation.md](docs/installation.md) for additional information, includin
 
 The following steps have been tested on Ubuntu20.04.
 
-- You must have an NVIDIA graphics card with at least 6GB VRAM and have [CUDA](https://developer.nvidia.com/cuda-downloads) installed.
+- You must have an NVIDIA graphics card with at least 48GB VRAM and have [CUDA](https://developer.nvidia.com/cuda-downloads) installed.
 - Install `Python >= 3.8`.
 - (Optional, Recommended) Create a virtual environment:
 
@@ -87,7 +87,7 @@ pip install -r requirements.txt
 ## Training canonical DreamAvatar
 
 ```sh
-# avatar generation with 512x512 NeRF rendering, ~40GB VRAM
+# avatar generation with 512x512 NeRF rendering, ~48GB VRAM
 python launch.py --config configs/dreamavatar.yaml --train --gpu 0 system.prompt_processor.prompt="Wonder Woman"
 # if you don't have enough VRAM, try training with 64x64 NeRF rendering
 python launch.py --config configs/dreamavatar.yaml --train --gpu 0 system.prompt_processor.prompt="Wonder Woman" data.width=64 data.height=64 data.batch_size=1
