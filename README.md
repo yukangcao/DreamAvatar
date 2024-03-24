@@ -27,8 +27,90 @@ We present **DreamAvatar**, a text-and-shape guided framework for generating hig
 <img src="./docs/static/video/Pipeline-n.png" width="800px">
 </div>
 
-## Code
-We will release the code soon... 🚧 Stay tuned!
+## Installation
+
+See [installation.md](docs/installation.md) for additional information, including installation via Docker.
+
+The following steps have been tested on Ubuntu20.04.
+
+- You must have an NVIDIA graphics card with at least 6GB VRAM and have [CUDA](https://developer.nvidia.com/cuda-downloads) installed.
+- Install `Python >= 3.8`.
+- (Optional, Recommended) Create a virtual environment:
+
+```sh
+python3 -m virtualenv venv
+. venv/bin/activate
+
+# Newer pip versions, e.g. pip-23.x, can be much faster than old versions, e.g. pip-20.x.
+# For instance, it caches the wheels of git packages to avoid unnecessarily rebuilding them later.
+python3 -m pip install --upgrade pip
+```
+
+- Install `PyTorch >= 1.12`. We have tested on `torch1.12.1+cu113` and `torch2.0.0+cu118`, but other versions should also work fine.
+
+```sh
+# torch1.12.1+cu113
+pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
+# or torch2.0.0+cu118
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+```
+
+- Install [pytorch3d](https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md) and [kaolin](https://kaolin.readthedocs.io/en/latest/notes/installation.html).
+
+```
+pip install git+https://github.com/facebookresearch/pytorch3d.git@v0.7.1
+pip install git+https://github.com/NVIDIAGameWorks/kaolin.git
+```
+
+- (Optional, Recommended) Install ninja to speed up the compilation of CUDA extensions:
+
+```sh
+pip install ninja
+```
+
+- Install dependencies:
+
+```sh
+pip install -r requirements.txt
+```
+
+## Download SMPL-X model
+
+* Please kindly follow instructions in [SMPL-X](https://smpl-x.is.tue.mpg.de/) to download required model.
+```
+./smpl_data
+├── SMPLX_NEUTRAL.pkl
+├── SMPLX_FEMALE.pkl
+├── SMPLX_MALE.pkl
+```
+
+## Training canonical DreamAvatar
+
+```sh
+# avatar generation with 512x512 NeRF rendering, ~40GB VRAM
+python launch.py --config configs/dreamavatar.yaml --train --gpu 0 system.prompt_processor.prompt="Wonder Woman"
+# if you don't have enough VRAM, try training with 64x64 NeRF rendering
+python launch.py --config configs/dreamavatar.yaml --train --gpu 0 system.prompt_processor.prompt="Wonder Woman" data.width=64 data.height=64 data.batch_size=1
+```
+
+### Resume from checkpoints
+
+If you want to resume from a checkpoint, do:
+
+```sh
+# resume training from the last checkpoint, you may replace last.ckpt with any other checkpoints
+python launch.py --config path/to/trial/dir/configs/parsed.yaml --train --gpu 0 resume=path/to/trial/dir/ckpts/last.ckpt
+# if the training has completed, you can still continue training for a longer time by setting trainer.max_steps
+python launch.py --config path/to/trial/dir/configs/parsed.yaml --train --gpu 0 resume=path/to/trial/dir/ckpts/last.ckpt trainer.max_steps=20000
+# you can also perform testing using resumed checkpoints
+python launch.py --config path/to/trial/dir/configs/parsed.yaml --test --gpu 0 resume=path/to/trial/dir/ckpts/last.ckpt
+# note that the above commands use parsed configuration files from previous trials
+# which will continue using the same trial directory
+# if you want to save to a new trial directory, replace parsed.yaml with raw.yaml in the command
+
+# only load weights from saved checkpoint but dont resume training (i.e. dont load optimizer state):
+python launch.py --config path/to/trial/dir/configs/parsed.yaml --train --gpu 0 system.weights=path/to/trial/dir/ckpts/last.ckpt
+```
 
 ## Misc.
 If you want to cite our work, please use the following bib entry:
