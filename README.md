@@ -112,14 +112,15 @@ python launch.py --config path/to/trial/dir/configs/parsed.yaml --test --gpu 0 r
 python launch.py --config path/to/trial/dir/configs/parsed.yaml --train --gpu 0 system.weights=path/to/trial/dir/ckpts/last.ckpt
 ```
 
-## Misc.
+## Bibtex.
 If you want to cite our work, please use the following bib entry:
 ```
-@article{cao2023dreamavatar,
+@inproceedings{cao2024dreamavatar,
   title={Dreamavatar: Text-and-shape guided 3d human avatar generation via diffusion models},
-  author={Cao, Yukang and Cao, Yan-Pei and Han, Kai and Shan, Ying and Wong, Kwan-Yee K},
-  journal={arXiv preprint arXiv:2304.00916},
-  year={2023}
+  author={Cao, Yukang and Cao, Yan-Pei and Han, Kai and Shan, Ying and Wong, Kwan-Yee~K.},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={958--968},
+  year={2024}
 }
 ```
 
